@@ -1,12 +1,16 @@
-version: "3.9"
-
 services:
   llm:
     build: .
     container_name: small-llm
     volumes:
       - ./src:/app/src
-    ports:
-      - "5000:5000"  # optional if you expose an API later
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    group_add:
+      - video
+    environment:
+      - HSA_OVERRIDE_GFX_VERSION=10.3.0   # RX 6600 (Navi 23)
+      - PYTORCH_ROCM_ARCH=gfx1032         # same as above
     stdin_open: true
     tty: true
